@@ -22,11 +22,13 @@ void solve_linear(double b, double c) {
 	}
 }
 
+double discriminant(double a, double b, double c) {
+	return b * b - 4 * a * c;
+}
 
 int main() {
 	double a, b, c;
 	coefficients(a, b, c);
-	cout << a << " " << b << " " << c << endl;
-	solve_linear(b, c);
+	cout << "\n" << discriminant(a, b, c) << endl;
 	return 0;
 }
