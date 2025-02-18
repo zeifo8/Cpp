@@ -8,9 +8,25 @@ void coefficients(double& a, double& b, double& c) {
 	cin >> a >> b >> c;
 }
 
+void solve_linear(double b, double c) {
+	if (b == 0) {
+		if (c == 0) {
+			cout << "Infinitely many solutions" << endl;
+		}
+		else {
+			cout << "No solutions" << endl;
+		}
+	}
+	else {
+		cout << "Only one solution, x = " << -c / b << endl;
+	}
+}
+
+
 int main() {
 	double a, b, c;
 	coefficients(a, b, c);
-	cout << a << " " << b << " "  << c;
+	cout << a << " " << b << " " << c << endl;
+	solve_linear(b, c);
 	return 0;
 }
