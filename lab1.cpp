@@ -36,10 +36,16 @@ void single_solve(double a, double b) {
 	cout << "One real solution, x = " << (-b) / (2 * a) << endl;
 }
 
+void complex_solve(double a, double b, double D) {
+	double real_s = (-b) / (2 * a);
+	double imaginary_s = sqrt(-D) / (2 * a);
+	cout << "Complex solves: \n x1 = " << real_s << " + " << imaginary_s << "i" << "\n x2 = " << real_s << " - " << imaginary_s << "i" << endl;
+}
+
 int main() {
 	double a, b, c;
 	coefficients(a, b, c);
 	cout << "\n" << discriminant(a, b, c) << endl;
-	single_solve(a, b);
+	complex_solve(a, b, discriminant(a, b, c));
 	return 0;
 }
