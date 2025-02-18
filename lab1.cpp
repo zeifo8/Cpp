@@ -42,10 +42,28 @@ void complex_solve(double a, double b, double D) {
 	cout << "Complex solves: \n x1 = " << real_s << " + " << imaginary_s << "i" << "\n x2 = " << real_s << " - " << imaginary_s << "i" << endl;
 }
 
+void solve(double a, double b, double c) {
+	if (a == 0) {
+		solve_linear(b, c);
+	}
+	else {
+		double D = discriminant(a, b, c);
+		if (D > 0) {
+			real_solve(a, b, D);
+		}
+		else if (D == 0) {
+			single_solve(a, b);
+		}
+		else {
+			complex_solve(a, b, D);
+		}
+	}
+
+}
+
 int main() {
 	double a, b, c;
 	coefficients(a, b, c);
-	cout << "\n" << discriminant(a, b, c) << endl;
-	complex_solve(a, b, discriminant(a, b, c));
+	solve(a, b, c);
 	return 0;
 }
