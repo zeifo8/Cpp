@@ -26,9 +26,16 @@ double discriminant(double a, double b, double c) {
 	return b * b - 4 * a * c;
 }
 
+void real_solve(double a, double b, double D) {
+	double x1 = (-b + sqrt(D)) / (2 * a);
+	double x2 = (-b - sqrt(D)) / (2 * a);
+	cout << "Two real solutions: \n x1 = " << x1 << "\n x2 = " << x2 << endl;
+}
+
 int main() {
 	double a, b, c;
 	coefficients(a, b, c);
 	cout << "\n" << discriminant(a, b, c) << endl;
+	real_solve(a, b, discriminant(a, b, c));
 	return 0;
 }
