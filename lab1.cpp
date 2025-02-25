@@ -10,10 +10,21 @@ void write_to_file(const string& name, const string& res) {
 	file.close();
 }
 
+void read_coefficients(const string& name, double& a, double& b, double& c) {
+	ifstream file(name);
+	if (!file) {
+		cout << "Error reading the file";
+	}
+	file >> a >> b >> c;
+	file.close();
+}
+
+/*
 void coefficients(double& a, double& b, double& c) {
 	cout << "For the equation ax^2 + bx + c = 0 write, what the coefficients a, b, c:" << endl;
 	cin >> a >> b >> c;
 }
+*/
 
 void solve_linear(double b, double c, string& out) {
 	if (b == 0) {
@@ -70,10 +81,10 @@ void solve(double a, double b, double c, string& out) {
 
 int main() {
 	double a, b, c;
-	string output_file = "solves.txt";
 	string res;
-	coefficients(a, b, c);
+//  coefficients(a, b, c);
+	read_coefficients("coefficients.txt", a, b, c);
 	solve(a, b, c, res);
-	write_to_file(output_file, res);
+	write_to_file("solves.txt", res);
 	return 0;
 }
