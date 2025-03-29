@@ -213,7 +213,6 @@ int main() {
     eqFile.close();
 
     int totalEquations = static_cast<int>(equations.size());
-    std::cout << totalEquations << " equations\n";
     if (totalEquations == 0) {
         std::cout << "No equations\n";
         return 1;
@@ -235,7 +234,6 @@ int main() {
     }
     stFile.close();
 
-    std::cout << students.size() << " students\n";
     if (students.empty()) {
         std::cout << "No students\n";
         return 1;
@@ -286,6 +284,8 @@ int main() {
         resFile << students[iStu].getName() << " " << correctCount[iStu] << "/" << totalEquations << "\n";
     }
     resFile.close();
+
+    std::cout << "Files are saved\n";
 
     return 0;
 }

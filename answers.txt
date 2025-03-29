@@ -1,0 +1,28 @@
+1 4 4 | x=0 | Ivanov
+1 1 1 | x=0 | Ivanov
+2 -3 -5 | x=0 | Ivanov
+0 5 10 | x=0 | Ivanov
+0 0 5 | x=0 | Ivanov
+0 0 0 | x=0 | Ivanov
+1 0 0 | x=0 | Ivanov
+1 4 4 | x=-2.000000 | Smirnov
+1 1 1 | x1=-0.500000+0.866025i x2=-0.500000-0.866025i | Smirnov
+2 -3 -5 | x1=2.500000 x2=-1.000000 | Smirnov
+0 5 10 | x=-2.000000 | Smirnov
+0 0 5 | No solutions | Smirnov
+0 0 0 | Infinitely many | Smirnov
+1 0 0 | x=-0.000000 | Smirnov
+1 4 4 | x=-2.000000 | Bistrov
+1 1 1 | x1=-0.500000+0.866025i x2=-0.500000-0.866025i | Bistrov
+2 -3 -5 | x=0 | Bistrov
+0 5 10 | x=0 | Bistrov
+0 0 5 | No solutions | Bistrov
+0 0 0 | Infinitely many | Bistrov
+1 0 0 | x=-0.000000 | Bistrov
+1 4 4 | x=-2.000000 | Krugov
+1 1 1 | x=0 | Krugov
+2 -3 -5 | x1=2.500000 x2=-1.000000 | Krugov
+0 5 10 | x=0 | Krugov
+0 0 5 | x=0 | Krugov
+0 0 0 | x=0 | Krugov
+1 0 0 | x=0 | Krugov
