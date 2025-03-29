@@ -4,6 +4,8 @@
 #include <array>
 #include <string>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 double discriminant(double a, double b, double c) {
     return b * b - 4.0 * a * c;
@@ -62,7 +64,72 @@ void solve_equation(double a, double b, double c, std::string& out) {
     }
 }
 
+enum class StudentType {
+    Excellent,
+    Bad,
+    Middle
+};
+
+StudentType readStudentType(const std::string& str) {
+    if (str == "Excellent") {
+        return StudentType::Excellent;
+    }
+    if (str == "Bad") {
+        return StudentType::Bad;
+    }
+    if (str == "Middle") {
+        return StudentType::Middle;
+    }
+}
+
+class Teacher {
+public:
+    std::string solve(double a, double b, double c) const {
+        std::string out;
+        solve_equation(a, b, c, out);
+        return out;
+    }
+};
+
+class Student {
+private:
+    std::string name;
+    StudentType type;
+
+public:
+    Student(const std::string& n, StudentType t)
+        : name(n), type(t) {}
+
+    std::string getName() const {
+        return name;
+    }
+
+    StudentType getType() const {
+        return type;
+    }
+
+    std::string solveEquation(double a, double b, double c, const Teacher& teacher) const
+    {
+        if (type == StudentType::Excellent) {
+            return teacher.solve(a, b, c);
+        }
+        else if (type == StudentType::Bad) {
+            return "x=0";
+        }
+        else {
+            double r = static_cast<double>(rand()) / RAND_MAX;
+            if (r < 0.6) {
+                return teacher.solve(a, b, c);
+            } else {
+                return "x=0";
+            }
+        }
+    }
+};
+
 int main() {
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
     std::ifstream eqFile("equations.txt");
     if (!eqFile.is_open()) {
         std::cout << "Cannot open file\n";
@@ -77,17 +144,50 @@ int main() {
     }
     eqFile.close();
 
-    std::cout << equations.size() << "\n";
+    std::cout << equations.size() << " equations\n";
 
-    for (std::size_t i = 0; i < equations.size(); ++i) {
-        double a = equations[i][0];
-        double b = equations[i][1];
-        double c = equations[i][2];
+    if (equations.empty()) {
+        std::cout << "No equations\n";
+        return 1;
+    }
 
-        std::string out;
-        solve_equation(a, b, c, out);
+    std::ifstream stFile("students.txt");
+    if (!stFile.is_open()) {
+        std::cout << "Cannot open file\n";
+        return 1;
+    }
 
-        std::cout << a << "x^2 + " << b << "x + " << c << " = 0\n" << out << "\n\n";
+    std::vector<Student> students;
+    std::string sName, sTypeStr;
+
+    while (stFile >> sName >> sTypeStr) {
+        StudentType stType = readStudentType(sTypeStr);
+        Student st(sName, stType);
+        students.push_back(st);
+    }
+    stFile.close();
+
+    std::cout << students.size() << " students\n";
+
+    if (students.empty()) {
+        std::cout << "No students\n";
+        return 1;
+    }
+
+    Teacher teacher;
+
+    std::array<double, 3> firstEq = equations[0];
+    double a = firstEq[0];
+    double b = firstEq[1];
+    double c = firstEq[2];
+
+    std::cout << "\n1 equation: " << a << "x^2 + " << b << "x + " << c << " = 0\n";
+
+    for (std::size_t iStu = 0; iStu < students.size(); ++iStu) {
+        const Student& st = students[iStu];
+        std::string stuSol = st.solveEquation(a, b, c, teacher);
+
+        std::cout << st.getName() << ": " << stuSol << "\n";
     }
 
     return 0;
