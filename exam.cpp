@@ -212,8 +212,9 @@ int main() {
     }
     eqFile.close();
 
-    std::cout << equations.size() << " equations\n";
-    if (equations.empty()) {
+    int totalEquations = static_cast<int>(equations.size());
+    std::cout << totalEquations << " equations\n";
+    if (totalEquations == 0) {
         std::cout << "No equations\n";
         return 1;
     }
@@ -242,24 +243,49 @@ int main() {
 
     Teacher teacher;
 
-    std::array<double, 3> firstEq = equations[0];
-    double a = firstEq[0];
-    double b = firstEq[1];
-    double c = firstEq[2];
+    std::vector<std::string> teacherSolutions;
+    teacherSolutions.reserve(equations.size());
 
-    std::string teacherSol = teacher.solve(a, b, c);
+    for (std::size_t iEq = 0; iEq < equations.size(); ++iEq) {
+        double a = equations[iEq][0];
+        double b = equations[iEq][1];
+        double c = equations[iEq][2];
 
-    std::cout << "\n1 equation: " << a << "x^2 + " << b << "x + " << c << " = 0\n" << "Teacher solution: " << teacherSol << "\n\n";
+        std::string sol = teacher.solve(a, b, c);
+        teacherSolutions.push_back(sol);
+    }
+
+    std::ofstream answFile("answers.txt");
+
+    std::vector<int> correctCount(students.size(), 0);
 
     for (std::size_t iStu = 0; iStu < students.size(); ++iStu) {
         const Student& st = students[iStu];
 
-        std::string stuSol = st.solveEquation(a, b, c, teacher);
+        for (std::size_t iEq = 0; iEq < equations.size(); ++iEq) {
+            double a = equations[iEq][0];
+            double b = equations[iEq][1];
+            double c = equations[iEq][2];
 
-        bool correct = isCorrect(teacherSol, stuSol);
+            std::string stuSol = st.solveEquation(a, b, c, teacher);
 
-        std::cout << "Student: " << st.getName() << ": " << stuSol << " " << (correct ? "YES" : "NO") << "\n";
+            answFile << a << " " << b << " " << c << " | " << stuSol << " | " << st.getName() << "\n";
+
+            if (isCorrect(teacherSolutions[iEq], stuSol)) {
+                correctCount[iStu]++;
+            }
+        }
     }
+    answFile.close();
+
+    std::ofstream resFile("results.txt");
+
+    resFile << "Name" << " True/Total\n";
+
+    for (std::size_t iStu = 0; iStu < students.size(); ++iStu) {
+        resFile << students[iStu].getName() << " " << correctCount[iStu] << "/" << totalEquations << "\n";
+    }
+    resFile.close();
 
     return 0;
 }
