@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 
 double discriminant(double a, double b, double c) {
     return b * b - 4.0 * a * c;
@@ -127,6 +128,73 @@ public:
     }
 };
 
+std::vector<double> readRealSolutions(const std::string& sol) {
+    if (sol.find("No solutions") != std::string::npos) return {};
+    if (sol.find("Infinitely many") != std::string::npos) return {};
+    if (sol.find("i") != std::string::npos)  return {};
+
+    std::vector<double> roots;
+    std::vector<std::string> tokens;
+
+    std::size_t start = 0;
+    while (true) {
+        std::size_t pos = sol.find(' ', start);
+        if (pos == std::string::npos) {
+            tokens.push_back(sol.substr(start));
+            break;
+        }
+        tokens.push_back(sol.substr(start, pos - start));
+        start = pos + 1;
+    }
+
+    for (std::size_t i = 0; i < tokens.size(); ++i) {
+        std::size_t eqPos = tokens[i].find('=');
+        if (eqPos != std::string::npos) {
+            std::string numStr = tokens[i].substr(eqPos + 1);
+            double val = std::atof(numStr.c_str());
+            roots.push_back(val);
+        }
+    }
+    return roots;
+}
+
+bool isCorrect(const std::string& teacherSol, const std::string& studentSol) {
+    if (teacherSol == "No solutions" && studentSol == "No solutions") {
+        return true;
+    }
+    if (teacherSol == "Infinitely many" && studentSol == "Infinitely many") {
+        return true;
+    }
+
+    bool teacherHasComplex = (teacherSol.find('i') != std::string::npos);
+    bool studentHasComplex = (studentSol.find('i') != std::string::npos);
+
+    if (teacherHasComplex && studentHasComplex) {
+        return true;
+    }
+    if (teacherHasComplex != studentHasComplex) {
+        return false;
+    }
+
+    std::vector<double> tRoots = readRealSolutions(teacherSol);
+    std::vector<double> sRoots = readRealSolutions(studentSol);
+
+    if (tRoots.size() != sRoots.size()) {
+        return false;
+    }
+
+    std::sort(tRoots.begin(), tRoots.end());
+    std::sort(sRoots.begin(), sRoots.end());
+
+    const double EPS = 1e-5;
+    for (std::size_t i = 0; i < tRoots.size(); ++i) {
+        if (std::fabs(tRoots[i] - sRoots[i]) > EPS) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -145,7 +213,6 @@ int main() {
     eqFile.close();
 
     std::cout << equations.size() << " equations\n";
-
     if (equations.empty()) {
         std::cout << "No equations\n";
         return 1;
@@ -168,7 +235,6 @@ int main() {
     stFile.close();
 
     std::cout << students.size() << " students\n";
-
     if (students.empty()) {
         std::cout << "No students\n";
         return 1;
@@ -181,13 +247,18 @@ int main() {
     double b = firstEq[1];
     double c = firstEq[2];
 
-    std::cout << "\n1 equation: " << a << "x^2 + " << b << "x + " << c << " = 0\n";
+    std::string teacherSol = teacher.solve(a, b, c);
+
+    std::cout << "\n1 equation: " << a << "x^2 + " << b << "x + " << c << " = 0\n" << "Teacher solution: " << teacherSol << "\n\n";
 
     for (std::size_t iStu = 0; iStu < students.size(); ++iStu) {
         const Student& st = students[iStu];
+
         std::string stuSol = st.solveEquation(a, b, c, teacher);
 
-        std::cout << st.getName() << ": " << stuSol << "\n";
+        bool correct = isCorrect(teacherSol, stuSol);
+
+        std::cout << "Student: " << st.getName() << ": " << stuSol << " " << (correct ? "YES" : "NO") << "\n";
     }
 
     return 0;
