@@ -1,0 +1,5 @@
+Name True/Total
+Ivanov 1/7
+Smirnov 7/7
+Bistrov 5/7
+Krugov 3/7
